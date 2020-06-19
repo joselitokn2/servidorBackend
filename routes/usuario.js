@@ -114,7 +114,7 @@ Crear un nuevo usuario
  
  */
 
-app.post('/', middAutenticacion.verificaToken, (req, res, next) => {
+app.post('/', (req, res, next) => {
 
     var body = req.body;
 

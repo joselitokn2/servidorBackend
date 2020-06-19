@@ -1,4 +1,3 @@
-
 var express = require('express');
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
@@ -17,7 +16,7 @@ const client = new OAuth2Client(CLIENT_ID);
 async function verify(token) {
     const ticket = await client.verifyIdToken({
         idToken: token,
-        audience: CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
+        audience: CLIENT_ID, // Specify the CLIENT_ID of the app that accesses the backend
         // Or, if multiple clients access the backend:
         //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
     });
@@ -35,7 +34,7 @@ async function verify(token) {
 }
 
 
-app.post('/google', async (req, res) => {
+app.post('/google', async(req, res) => {
 
     var token = req.body.token;
     var googleUser = await verify(token)
@@ -67,7 +66,8 @@ app.post('/google', async (req, res) => {
                 res.status(200).json({
                     ok: true,
                     usuario: usuarioBD,
-                    token: token
+                    token: token,
+                    id: usuarioBD._id
 
                 });
 
@@ -87,6 +87,7 @@ app.post('/google', async (req, res) => {
                     ok: true,
                     usuario: usuarioBD,
                     token: token,
+                    id: usuarioBD._id
 
 
                 });
