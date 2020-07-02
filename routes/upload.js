@@ -107,11 +107,11 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
             }
 
 
-            var pathViejo = './uploads/usuarios/' + usuario.img;
+            var pathViejo = './uploads/usuarios/' + usuario.imagen;
 
             // Si existe, elimina la imagen anterior
             if (fs.existsSync(pathViejo)) {
-                fs.unlink(pathViejo);
+                fs.unlinkSync(pathViejo);
             }
 
             usuario.imagen = nombreArchivo;
@@ -145,11 +145,11 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
                 });
             }
 
-            var pathViejo = './uploads/medicos/' + medico.img;
+            var pathViejo = './uploads/medicos/' + medico.imagen;
 
             // Si existe, elimina la imagen anterior
             if (fs.existsSync(pathViejo)) {
-                fs.unlink(pathViejo);
+                fs.unlinkSync(pathViejo);
             }
 
             medico.imagen = nombreArchivo;
@@ -179,11 +179,11 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
                 });
             }
 
-            var pathViejo = './uploads/hospitales/' + hospital.img;
+            var pathViejo = './uploads/hospitales/' + hospital.imagen;
 
             // Si existe, elimina la imagen anterior
             if (fs.existsSync(pathViejo)) {
-                fs.unlink(pathViejo);
+                fs.unlinkSync(pathViejo);
             }
 
             hospital.imagen = nombreArchivo;

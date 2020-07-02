@@ -7,7 +7,7 @@ var middAutenticacion = require('../middlewares/autenticacion');
 var Medico = require('../models/medico');
 /* 
 
-Obtener todos los medicoes
+Obtener todos los medicos
 
  */
 
@@ -44,13 +44,47 @@ app.get('/', (req, res, next) => {
 
 
 });
+/*
 
+Obtener un solo medico
+
+*/
+
+app.get('/:id', (req, res) => {
+    var id = req.params.id;
+    Medico.findById(id)
+        .populate('usuario', 'nombre email imagen')
+        .populate('hospital')
+        .exec((err, medico) => {
+
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: ' Error al buscar medico ',
+                    errors: err
+                });
+            }
+            if (!medico) {
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: ' El medico con el id' + id + 'no existe',
+                    errors: { message: 'No existe un medico con ese ID' }
+                });
+            }
+            return res.status(200).json({
+                ok: true,
+                medico: medico
+            });
+
+        });
+
+});
 
 
 /*
-
+ 
 Actualizar medico
-
+ 
 */
 
 app.put('/:id', middAutenticacion.verificaToken, (req, res, next) => {
@@ -141,9 +175,9 @@ app.post('/', middAutenticacion.verificaToken, (req, res, next) => {
 });
 
 /*
-
+ 
 Borrar un medico por id
-
+ 
  */
 app.delete('/:id', middAutenticacion.verificaToken, (req, res) => {
 

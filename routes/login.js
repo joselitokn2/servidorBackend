@@ -5,11 +5,28 @@ var RAIZ = require('../config/config').RAIZ;
 
 var app = express();
 
+var middAutenticacion = require('../middlewares/autenticacion');
+
 var Usuario = require('../models/usuario');
 // Google
 var CLIENT_ID = require('../config/config').CLIENT_ID;
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(CLIENT_ID);
+
+/* RENOVAR TOKEN */
+
+app.get('/renovartoken', middAutenticacion.verificaToken, (req, res) => {
+
+    var token = jwt.sign({ usuario: req.usuario }, RAIZ, { expiresIn: 14400 }); // 4 horas
+
+    res.status(200).json({
+        ok: true,
+        token: token
+    });
+
+});
+
+
 
 /* AUTENTIFICACION DE GOOGLE */
 
@@ -45,7 +62,7 @@ app.post('/google', async(req, res) => {
             });
         });
 
-    Usuario.findOne({ email: googleUser.email }, (err, usuarioBD) => {
+    Usuario.findOne({ email: googleUser.email }, (err, usuario) => {
 
         if (err) {
             return res.status(500).json({
@@ -55,19 +72,20 @@ app.post('/google', async(req, res) => {
             });
         }
 
-        if (usuarioBD) {
-            if (usuarioBD.google === false) {
+        if (usuario) {
+            if (usuario.google === false) {
                 return res.status(400).json({
                     ok: false,
                     mensaje: 'Debe usar su autenticación normal'
                 });
             } else {
-                var token = jwt.sign({ usuario: usuarioBD }, RAIZ, { expiresIn: 14400 })
+                var token = jwt.sign({ usuario: usuario }, RAIZ, { expiresIn: 14400 }) // 4 horas
                 res.status(200).json({
                     ok: true,
-                    usuario: usuarioBD,
+                    usuario: usuario,
                     token: token,
-                    id: usuarioBD._id
+                    id: usuario._id,
+                    menu: obtenerMenu(usuario.role)
 
                 });
 
@@ -87,8 +105,8 @@ app.post('/google', async(req, res) => {
                     ok: true,
                     usuario: usuarioBD,
                     token: token,
-                    id: usuarioBD._id
-
+                    id: usuarioBD._id,
+                    menu: obtenerMenu(usuarioBD.role)
 
                 });
 
@@ -143,13 +161,45 @@ app.post('/', (req, res) => {
         res.status(200).json({
             ok: true,
             usuario: usuarioBD,
-            token: token
+            token: token,
+            menu: obtenerMenu(usuarioBD.role)
 
         });
     });
 
 
 });
+
+function obtenerMenu(role) {
+    var menu = [{
+            titulo: 'Principal',
+
+            icono: 'mdi mdi-hospital',
+            /*   icono: 'mdi mdi-gauge', */
+            submenu: [
+                { titulo: 'Dashboard', url: '/dashboard' },
+                { titulo: 'ProgressBar', url: '/progress' },
+                { titulo: 'Gráficas', url: '/graficas1' },
+                { titulo: 'Promesas', url: '/promesas' },
+                { titulo: 'Rxjs', url: '/rxjs' },
+            ],
+        },
+        {
+            titulo: 'Administrador',
+            icono: 'mdi mdi-folder-lock-open',
+            submenu: [
+                //  { titulo: 'Usuarios', url: '/usuarios' },
+                { titulo: 'Hospitales', url: '/hospitales' },
+                { titulo: 'Medicos', url: '/medicos' },
+            ],
+        },
+    ];
+    if (role === 'ADMIN_ROLE') {
+        menu[1].submenu.unshift({ titulo: 'Usuarios', url: '/usuarios' });
+    }
+
+    return menu;
+}
 
 
 module.exports = app;

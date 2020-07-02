@@ -21,7 +21,7 @@ app.get('/', (req, res, next) => {
     var puntero = req.query.puntero || 0;
     puntero = Number(puntero);
 
-    Usuario.find({}, 'nombre email imagen role')
+    Usuario.find({}, 'nombre email imagen role google')
         .skip(puntero)
         .limit(5)
         .exec(
@@ -57,7 +57,7 @@ Actualizar usuario
 
 */
 
-app.put('/:id', middAutenticacion.verificaToken, (req, res, next) => {
+app.put('/:id', [middAutenticacion.verificaToken, middAutenticacion.verificaAdminRoleOmismoUsuario], (req, res, next) => {
 
     var id = req.params.id;
     var body = req.body;
