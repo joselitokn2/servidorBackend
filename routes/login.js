@@ -175,10 +175,10 @@ function obtenerMenu(role) {
             titulo: 'Principal',
 
             icono: 'mdi mdi-hospital',
-            /*   icono: 'mdi mdi-gauge', */
+
             submenu: [
-                { titulo: 'Dashboard', url: '/dashboard' },
-                { titulo: 'ProgressBar', url: '/progress' },
+                { titulo: 'Inicio', url: '/dashboard' },
+                { titulo: 'Barras de Progreso', url: '/progress' },
                 { titulo: 'Gráficas', url: '/graficas1' },
                 { titulo: 'Promesas', url: '/promesas' },
                 { titulo: 'Rxjs', url: '/rxjs' },
