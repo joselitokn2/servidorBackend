@@ -5,7 +5,7 @@ var app = express();
 var middAutenticacion = require('../middlewares/autenticacion');
 
 var Hospital = require('../models/hospital');
-/* 
+/*
 
 Obtener todos los hospitales
 
@@ -18,7 +18,7 @@ app.get('/', (req, res, next) => {
 
     Hospital.find({})
         .skip(puntero)
-        .limit(5)
+        .limit(40)
         .populate('usuario', 'nombre email')
         .exec(
 
@@ -136,9 +136,9 @@ app.put('/:id', middAutenticacion.verificaToken, (req, res, next) => {
 
 
 /*
- 
+
 Crear un nuevo hospital
- 
+
  */
 
 app.post('/', middAutenticacion.verificaToken, (req, res, next) => {
